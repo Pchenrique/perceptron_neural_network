@@ -9,10 +9,9 @@ data = np.genfromtxt("colorrectal_2_classes_formatted.txt", delimiter=",")
 
 classes = data[:, 142]
 attributes = np.delete(data,(142), axis=1)
-# print(attributes)
+
 min_max_scaler = MinMaxScaler()
 attributes_norm = min_max_scaler.fit_transform(attributes)
-# print(attributes_norm)
 
 l_acc = []
 l_prec = []
@@ -27,24 +26,21 @@ for i in range(3):
   if(i == 1):
     clf = MLPClassifier(activation='relu', solver='lbfgs', hidden_layer_sizes=(80,), random_state=1, learning_rate_init=0.0002, max_iter=200)
   if(i == 2):
-    clf = MLPClassifier(activation='relu', solver='lbfgs', hidden_layer_sizes=(15,), random_state=1, learning_rate_init=0.001, max_iter=60)
+    clf = MLPClassifier(activation='logistic', solver='lbfgs', hidden_layer_sizes=(30,), learning_rate_init=0.0003, max_iter=190)
   
-  for j in range(10):
-    clf.fit(x_train, y_train) 
+  clf.fit(x_train, y_train) 
 
-    y_pred = clf.predict(x_test)
+  y_pred = clf.predict(x_test)
 
-    #print("Score:",  clf.score(x_test, y_test))
+  acc = accuracy_score(y_test, y_pred)
+  prec = precision_score(y_test, y_pred)
+  f1 = f1_score(y_test, y_pred)
+  recall = recall_score(y_test, y_pred)
 
-    acc = accuracy_score(y_test, y_pred)
-    prec = precision_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred)
-    recall = recall_score(y_test, y_pred)
-
-    l_acc.append(acc)
-    l_prec.append(prec)
-    l_f1.append(f1)
-    l_recall.append(recall)
+  l_acc.append(acc)
+  l_prec.append(prec)
+  l_f1.append(f1)
+  l_recall.append(recall)
   
   print("acc: ", round(mean(l_acc), 2))
   print("prec: ", round(mean(l_prec), 2))
